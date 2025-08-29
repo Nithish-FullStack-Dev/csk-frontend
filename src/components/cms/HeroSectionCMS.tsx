@@ -16,7 +16,7 @@ const HeroSectionCMS = () => {
 
   const fetchSlides = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/cms/getAllCms");
+      const res = await axios.get(`${import.meta.env.VITE_URL}/api/cms/getAllCms`);
       setSlides(res.data.banners);
     } catch (error) {
       console.log("Fetch error", error);
@@ -25,7 +25,7 @@ const HeroSectionCMS = () => {
 
   const saveSlides = async () => {
     try {
-      await axios.post("http://localhost:3000/api/cms/addAllCms", { slides });
+      await axios.post(`${import.meta.env.VITE_URL}/api/cms/addAllCms`, { slides });
       console.log("Slides saved");
     } catch (error) {
       console.log("Save error", error);
@@ -51,7 +51,7 @@ const HeroSectionCMS = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/cms/addCms",
+        `${import.meta.env.VITE_URL}/api/cms/addCms`,
         newSlide
       );
       const savedSlide = response.data.banner;
@@ -74,7 +74,7 @@ const HeroSectionCMS = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/uploads/upload",
+        `${import.meta.env.VITE_URL}/api/uploads/upload`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -101,7 +101,7 @@ const HeroSectionCMS = () => {
 
   const removeSlide = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/cms/deleteCms/${id}`);
+      await axios.delete(`${import.meta.env.VITE_URL}/api/cms/deleteCms/${id}`);
       setSlides((prevSlides) => prevSlides.filter((slide) => slide._id !== id));
     } catch (error) {
       console.error("Delete error", error);

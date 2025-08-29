@@ -76,7 +76,7 @@ const ChatInterface = () => {
 
     // Fetch all users from your backend API
     axios
-      .get("http://localhost:3000/api/user/getUsers", { withCredentials: true })
+      .get(`${import.meta.env.VITE_URL}/api/user/getUsers`, { withCredentials: true })
       .then((res) => setUsers(res.data.users))
       .catch((err) => console.error("Failed to fetch users:", err));
 

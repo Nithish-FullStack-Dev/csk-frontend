@@ -15,9 +15,7 @@ const FeaturedProperties = () => {
     if (loading) return;
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        "http://localhost:3000/api/cms/getAllCms"
-      );
+      const { data } = await axios.get(`${import.meta.env.VITE_URL}/api/cms/getAllCms`);
       setProperties(data.banners.slice(0, 3).reverse());
       setIsError(false);
     } catch (error) {

@@ -23,7 +23,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/dashboard/admin", {
+      .get(`${import.meta.env.VITE_URL}/api/dashboard/admin`, {
         withCredentials: true,
       })
       .then((res) => setStats(res.data))

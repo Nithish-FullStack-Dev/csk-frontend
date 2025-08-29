@@ -70,7 +70,7 @@ const UserManagement = () => {
   const fetchAllUsers = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/user/getUsers",
+        `${import.meta.env.VITE_URL}/api/user/getUsers`,
         { withCredentials: true }
       );
       setUsers(response.data.users);
@@ -103,7 +103,7 @@ const UserManagement = () => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/user/addUser",
+        `${import.meta.env.VITE_URL}/api/user/addUser`,
         createdUser
       );
       if (response.status === 201) {
@@ -130,7 +130,7 @@ const UserManagement = () => {
     if (!selectedUser) return;
     try {
       const response = await axios.delete(
-        `http://localhost:3000/api/user/deleteUser/${selectedUser._id}`
+        `${import.meta.env.VITE_URL}/api/user/deleteUser/${selectedUser._id}`
       );
 
       toast.success("User deleted successfully");
@@ -145,7 +145,7 @@ const UserManagement = () => {
     if (!selectedUser) return;
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/user/updateUser",
+        `${import.meta.env.VITE_URL}/api/user/updateUser`,
         { updatedUser: selectedUser }
       );
 
@@ -160,7 +160,7 @@ const UserManagement = () => {
 
   const handleResetPassword = async () => {
     try {
-      await axios.post("http://localhost:3000/api/user/resetPassword", {
+      await axios.post(`${import.meta.env.VITE_URL}/api/user/resetPassword`, {
         id: selectedUser?._id,
         password: newPassword,
       });

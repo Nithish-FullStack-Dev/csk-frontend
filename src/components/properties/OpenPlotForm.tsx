@@ -277,7 +277,7 @@ export function OpenPlotForm({
         thumbForm.append("file", thumbnailFile);
         console.log("Uploading thumbnail...");
         const thumbRes = await axios.post(
-          "http://localhost:3000/api/uploads/upload",
+          `${import.meta.env.VITE_URL}/api/uploads/upload`,
           thumbForm,
           {
             headers: {
@@ -300,7 +300,7 @@ export function OpenPlotForm({
           const formData = new FormData();
           formData.append("file", photo);
           const res = await axios.post(
-            "http://localhost:3000/api/uploads/upload",
+            `${import.meta.env.VITE_URL}/api/uploads/upload`,
             formData,
             {
               headers: {
@@ -341,12 +341,12 @@ export function OpenPlotForm({
 
       const response = isEditing
         ? await axios.put(
-            `http://localhost:3000/api/openPlot/updateOpenPlot/${openPlot?._id}`,
+            `${import.meta.env.VITE_URL}/api/openPlot/updateOpenPlot/${openPlot?._id}`,
             payload,
             config
           )
         : await axios.post(
-            "http://localhost:3000/api/openPlot/saveOpenPlot",
+            `${import.meta.env.VITE_URL}/api/openPlot/saveOpenPlot`,
             payload,
             config
           );

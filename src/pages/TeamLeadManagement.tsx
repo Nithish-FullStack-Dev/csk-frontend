@@ -65,7 +65,7 @@ interface User {
 
 const fetchUnassignedMem = async (): Promise<User[]> => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/teamLead/unassigned",
+    `${import.meta.env.VITE_URL}/api/teamLead/unassigned`,
     { withCredentials: false }
   );
   return data.data || [];
@@ -101,7 +101,7 @@ const TeamLeadManagement = () => {
 
   const fetchMyTeam = async (): Promise<TeamMember[]> => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/teamLead/getAllSalesTeam/${user._id}`,
+      `${import.meta.env.VITE_URL}/api/teamLead/getAllSalesTeam/${user._id}`,
       { withCredentials: true }
     );
     return data || [];
@@ -181,7 +181,7 @@ const TeamLeadManagement = () => {
       teamLeadId: string;
     }) => {
       const { data } = await axios.post(
-        "http://localhost:3000/api/teamLead/addTeamLead",
+        `${import.meta.env.VITE_URL}/api/teamLead/addTeamLead`,
         { salesId, teamLeadId, performance, status },
         { withCredentials: true }
       );
@@ -228,7 +228,7 @@ const TeamLeadManagement = () => {
       };
     }) => {
       const { data } = await axios.patch(
-        `http://localhost:3000/api/teamLead/updateTeamLead/${id}`,
+        `${import.meta.env.VITE_URL}/api/teamLead/updateTeamLead/${id}`,
         {
           status,
           performance,

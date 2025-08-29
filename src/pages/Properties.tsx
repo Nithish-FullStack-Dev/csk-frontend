@@ -94,13 +94,13 @@ const Properties = () => {
 
       if (isCustomer) {
         const { data: customer } = await axios.get(
-          "http://localhost:3000/api/customer/getCustomerByUser",
+          `${import.meta.env.VITE_URL}/api/customer/getCustomerByUser`,
           { withCredentials: true }
         );
         data = customer.properties.map((p: any) => p.property);
       } else {
         const { data: properties } = await axios.get(
-          "http://localhost:3000/api/properties/getProperties",
+          `${import.meta.env.VITE_URL}/api/properties/getProperties`,
           { withCredentials: true }
         );
         data = properties;
@@ -161,7 +161,7 @@ const Properties = () => {
   const fetchAllOpenPlots = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:3000/api/openPlot/getAllOpenPlot"
+        `${import.meta.env.VITE_URL}/api/openPlot/getAllOpenPlot`
       );
       setOpenPlots(data.plots);
       setFilteredOpenPlots(data.plots);
@@ -286,7 +286,9 @@ const Properties = () => {
       const csrfToken = await getCsrfToken();
 
       await axios.delete(
-        `http://localhost:3000/api/properties/deleteProperty/${selectedProperty.id}`,
+        `${import.meta.env.VITE_URL}/api/properties/deleteProperty/${
+          selectedProperty.id
+        }`,
         {
           headers: {
             "X-CSRF-Token": csrfToken,
@@ -312,7 +314,9 @@ const Properties = () => {
       const csrfToken = await getCsrfToken();
 
       await axios.delete(
-        `http://localhost:3000/api/openPlot/deleteOpenPlot/${selectedOpenPlot._id}`,
+        `${import.meta.env.VITE_URL}/api/openPlot/deleteOpenPlot/${
+          selectedOpenPlot._id
+        }`,
         {
           headers: {
             "X-CSRF-Token": csrfToken,

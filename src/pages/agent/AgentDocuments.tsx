@@ -88,7 +88,7 @@ interface Document {
 // --- API Functions ---
 const fetchDocuments = async () => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/document/getAllDocuments",
+    `${import.meta.env.VITE_URL}/api/document/getAllDocuments`,
     { withCredentials: true }
   );
   return data || [];
@@ -96,7 +96,7 @@ const fetchDocuments = async () => {
 
 const fetchAllPurchasedProperties = async () => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/customer/getAllPurchasedProp",
+    `${import.meta.env.VITE_URL}/api/customer/getAllPurchasedProp`,
     { withCredentials: true }
   );
   return data || [];
@@ -104,7 +104,7 @@ const fetchAllPurchasedProperties = async () => {
 
 const uploadDocument = async (formData: FormData) => {
   const { data } = await axios.post(
-    "http://localhost:3000/api/document/upload",
+    `${import.meta.env.VITE_URL}/api/document/upload`,
     formData,
     { withCredentials: true }
   );
@@ -121,7 +121,7 @@ const updateDocument = async ({
 }) => {
   console.log(id);
   const { data } = await axios.put(
-    `http://localhost:3000/api/document/updateDocument/${id}`,
+    `${import.meta.env.VITE_URL}/api/document/updateDocument/${id}`,
     formData,
     { withCredentials: true }
   );
@@ -134,7 +134,7 @@ const fetchAllCustomers = async (
   userId: string | undefined
 ) => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/customer/getAllCustomers",
+    `${import.meta.env.VITE_URL}/api/customer/getAllCustomers`,
     { withCredentials: true }
   );
 

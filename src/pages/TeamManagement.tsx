@@ -65,7 +65,7 @@ interface User {
 
 const fetchUnassignedMem = async (): Promise<User[]> => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/team/unassigned",
+    `${import.meta.env.VITE_URL}/api/team/unassigned`,
     { withCredentials: false }
   );
   return data.data || [];
@@ -123,7 +123,7 @@ const TeamManagement = () => {
 
   const fetchMyTeam = async (): Promise<TeamMember[]> => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/team/getAllTeam/${user._id}`,
+      `${import.meta.env.VITE_URL}/api/team/getAllTeam/${user._id}`,
       { withCredentials: true }
     );
     console.log(data);
@@ -173,7 +173,7 @@ const TeamManagement = () => {
       teamLeadId: string;
     }) => {
       const { data } = await axios.post(
-        "http://localhost:3000/api/team/addTeamMember",
+        `${import.meta.env.VITE_URL}/api/team/addTeamMember`,
         { agentId, status, performance, teamLeadId },
         { withCredentials: true }
       );
@@ -220,7 +220,7 @@ const TeamManagement = () => {
       };
     }) => {
       const { data } = await axios.patch(
-        `http://localhost:3000/api/team/updateTeam/${memberId}`,
+        `${import.meta.env.VITE_URL}/api/team/updateTeam/${memberId}`,
         { status, performance },
         { withCredentials: true }
       );

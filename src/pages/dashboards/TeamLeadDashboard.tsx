@@ -29,7 +29,7 @@ const TeamLeadDashboard = () => {
   // Fetch team
   const fetchMyTeam = async (): Promise<TeamMember[]> => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/team/getAllTeam/${user._id}`,
+      `${import.meta.env.VITE_URL}/api/team/getAllTeam/${user._id}`,
       { withCredentials: true }
     );
     return data || [];
@@ -49,7 +49,7 @@ const TeamLeadDashboard = () => {
   // Fetch site visits by agents
   const fetchPendingSiteVisits = async () => {
     const res = await axios.get(
-      "http://localhost:3000/api/siteVisit/getAllSiteVis",
+      `${import.meta.env.VITE_URL}/api/siteVisit/getAllSiteVis`,
       {
         withCredentials: true,
       }

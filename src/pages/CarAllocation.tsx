@@ -76,7 +76,7 @@ interface RecentActivity {
 
 const fetchAllVehicles = async (): Promise<Vehicle[]> => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/cars/getAllCars",
+    `${import.meta.env.VITE_URL}/api/cars/getAllCars`,
     {
       withCredentials: true,
     }
@@ -86,7 +86,7 @@ const fetchAllVehicles = async (): Promise<Vehicle[]> => {
 
 const updateVehicle = async (vehicle: Vehicle): Promise<Vehicle> => {
   const { data } = await axios.put(
-    `http://localhost:3000/api/cars/updateCarById/${vehicle._id}`,
+    `${import.meta.env.VITE_URL}/api/cars/updateCarById/${vehicle._id}`,
     vehicle,
     { withCredentials: true }
   );
@@ -97,7 +97,7 @@ const addVehicle = async (
   newVehicleData: Omit<Vehicle, "_id" | "createdAt" | "updatedAt">
 ): Promise<Vehicle> => {
   const { data } = await axios.post(
-    "http://localhost:3000/api/cars/saveCar",
+    `${import.meta.env.VITE_URL}/api/cars/saveCar`,
     newVehicleData,
     { withCredentials: true }
   );
@@ -148,7 +148,7 @@ const CarAllocation = () => {
 
   const fetchMyTeam = async () => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/team/getAllTeam/${user._id}`,
+      `${import.meta.env.VITE_URL}/api/team/getAllTeam/${user._id}`,
       { withCredentials: true }
     );
     return data;

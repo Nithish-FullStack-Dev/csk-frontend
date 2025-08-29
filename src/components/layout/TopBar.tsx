@@ -40,7 +40,7 @@ const TopBar = () => {
   const fetchUnreadNotificationCount = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/notifications/${userId}/unread-count`
+        `${import.meta.env.VITE_URL}/api/notifications/${userId}/unread-count`
       );
       setUnreadNotificationCount(res.data.unreadCount || 0);
     } catch (err) {
@@ -51,7 +51,7 @@ const TopBar = () => {
   const fetchUnreadNotifications = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:3000/api/notifications/${userId}/unread`
+        `${import.meta.env.VITE_URL}/api/notifications/${userId}/unread`
       );
       setNotifications(res.data.notifications || []);
     } catch (err) {
@@ -62,7 +62,9 @@ const TopBar = () => {
   // --- NEW: Fetch all users for message previews (names/avatars) ---
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/user/getUsers", { withCredentials: true })
+      .get(`${import.meta.env.VITE_URL}/api/user/getUsers`, {
+        withCredentials: true,
+      })
       .then((res) => setAllUsers(res.data.users))
       .catch(console.error);
   }, []); // Fetch once on mount

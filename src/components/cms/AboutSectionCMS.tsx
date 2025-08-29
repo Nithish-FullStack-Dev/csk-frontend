@@ -61,7 +61,7 @@ const AboutSectionCMS = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/uploads/upload",
+        `${import.meta.env.VITE_URL}/api/uploads/upload`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -86,7 +86,7 @@ const AboutSectionCMS = () => {
   const fetchAboutInfo = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:3000/api/aboutSection/getAboutSec"
+        `${import.meta.env.VITE_URL}/api/aboutSection/getAboutSec`
       );
       setAboutContent({
         _id: data._id || "",
@@ -119,7 +119,9 @@ const AboutSectionCMS = () => {
       };
 
       const { data } = await axios.put(
-        `http://localhost:3000/api/aboutSection/updateAboutSec/${aboutContent._id}`,
+        `${import.meta.env.VITE_URL}/api/aboutSection/updateAboutSec/${
+          aboutContent._id
+        }`,
         payload
       );
 

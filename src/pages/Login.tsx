@@ -44,7 +44,7 @@ const Login = () => {
           <CardHeader className="space-y-1 text-center">
             <div className="flex justify-center mb-6">
               <img
-                src="/assets/images/CSK-LOGO.png"
+                src="/assets/images/CSK-realtors-logo.png"
                 alt="CSK Realtors Logo"
                 className="h-24 w-auto"
               />

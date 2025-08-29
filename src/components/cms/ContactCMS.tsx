@@ -17,7 +17,7 @@ const ContactCMS = () => {
     const fetchContactInfo = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/contact/contactInfo"
+          `${import.meta.env.VITE_URL}/api/contact/contactInfo`
         );
         setContactInfo(response.data);
       } catch (error) {
@@ -33,7 +33,7 @@ const ContactCMS = () => {
   const handleSave = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/contact/updateContactInfo",
+        `${import.meta.env.VITE_URL}/api/contact/updateContactInfo`,
         contactInfo
       );
       setIsEditing(false);

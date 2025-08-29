@@ -43,7 +43,7 @@ import { Property } from "../public/PropertyInterfaces";
 // API Calls
 const createSiteVisit = async (bookDetails: any) => {
   const { data } = await axios.post(
-    "http://localhost:3000/api/siteVisit/bookSite",
+    `${import.meta.env.VITE_URL}/api/siteVisit/bookSite`,
     bookDetails,
     { withCredentials: true }
   );
@@ -52,7 +52,7 @@ const createSiteVisit = async (bookDetails: any) => {
 
 const fetchAllSiteVisits = async () => {
   const { data } = await axios.get(
-    `http://localhost:3000/api/siteVisit/getAllSiteVis`,
+    `${import.meta.env.VITE_URL}/api/siteVisit/getAllSiteVis`,
     { withCredentials: true }
   );
   return data;
@@ -66,7 +66,7 @@ export const useBookSiteVisit = () => {
 
 const fetchAllVehicles = async (): Promise<Vehicle[]> => {
   const { data } = await axios.get(
-    `http://localhost:3000/api/cars/getAllCars`,
+    `${import.meta.env.VITE_URL}/api/cars/getAllCars`,
     { withCredentials: true }
   );
   return data;
@@ -74,7 +74,7 @@ const fetchAllVehicles = async (): Promise<Vehicle[]> => {
 
 const fetchAllLeads = async (): Promise<Lead[]> => {
   const { data } = await axios.get(
-    `http://localhost:3000/api/leads/getAllLeads`,
+    `${import.meta.env.VITE_URL}/api/leads/getAllLeads`,
     { withCredentials: true }
   );
   return data.leads;
@@ -160,7 +160,7 @@ const SiteVisits = () => {
 
   const fetchSiteVisitsOfAgent = async () => {
     const { data } = await axios.get(
-      `http://localhost:3000/api/siteVisit/getSiteVisitById/${user?._id}`,
+      `${import.meta.env.VITE_URL}/api/siteVisit/getSiteVisitById/${user?._id}`,
       { withCredentials: true }
     );
     return data;

@@ -63,7 +63,7 @@ interface SiteVisitRequest {
 
 const fetchAllAgentSiteVisit = async (): Promise<SiteVisitRequest[]> => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/siteVisit/getSiteVisitOfAgents"
+    `${import.meta.env.VITE_URL}/api/siteVisit/getSiteVisitOfAgents`
   );
   return data;
 };
@@ -97,7 +97,7 @@ const Approvals = () => {
       approvalNotes?: string | null;
     }) => {
       const response = await axios.patch(
-        `http://localhost:3000/api/siteVisit/approvalOrReject`,
+        `${import.meta.env.VITE_URL}/api/siteVisit/approvalOrReject`,
         {
           _id: id,
           status,

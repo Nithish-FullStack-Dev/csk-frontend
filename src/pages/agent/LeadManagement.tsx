@@ -91,7 +91,7 @@ export interface Lead {
 
 export const fetchLeads = async () => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/leads/getLeadsById",
+    `${import.meta.env.VITE_URL}/api/leads/getLeadsById`,
     { withCredentials: true }
   );
   return data || [];
@@ -99,7 +99,7 @@ export const fetchLeads = async () => {
 
 export const fetchAllLeads = async () => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/leads/getAllLeads",
+    `${import.meta.env.VITE_URL}/api/leads/getAllLeads`,
     { withCredentials: true }
   );
   return data.leads || [];
@@ -120,7 +120,7 @@ const saveLead = async (
   };
 
   const { data } = await axios.post(
-    "http://localhost:3000/api/leads/saveLead",
+    `${import.meta.env.VITE_URL}/api/leads/saveLead`,
     dataToSend,
     { withCredentials: true }
   );
@@ -129,7 +129,7 @@ const saveLead = async (
 
 const saveCustomer = async (payload: CustomerPayload) => {
   const { data } = await axios.post(
-    "http://localhost:3000/api/customer/addCustomer",
+    `${import.meta.env.VITE_URL}/api/customer/addCustomer`,
     payload,
     { withCredentials: true }
   );
@@ -147,7 +147,7 @@ const updateLead = async (payload: Lead) => {
   };
 
   const { data } = await axios.put(
-    `http://localhost:3000/api/leads/updateLead/${_id}`,
+    `${import.meta.env.VITE_URL}/api/leads/updateLead/${_id}`,
     dataToSend,
     { withCredentials: true }
   );
@@ -156,21 +156,21 @@ const updateLead = async (payload: Lead) => {
 
 const fetchAllcustomers = async () => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/customer/getAllCustomers"
+    `${import.meta.env.VITE_URL}/api/customer/getAllCustomers`
   );
   return data;
 };
 
 const fetchAllAgents = async () => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/user/getAllAgents"
+    `${import.meta.env.VITE_URL}/api/user/getAllAgents`
   );
   return data;
 };
 
 const fetchAllCustomer_purchased = async () => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/user/getAllcustomer_purchased"
+    `${import.meta.env.VITE_URL}/api/user/getAllcustomer_purchased`
   );
   return data;
 };
@@ -275,7 +275,9 @@ const LeadManagement = () => {
   const { data: properties = [] } = useQuery<Property[]>({
     queryKey: ["available-properties"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:3000/api/leads/getLeadProp");
+      const res = await fetch(
+        `${import.meta.env.VITE_URL}/api/leads/getLeadProp`
+      );
       const json = await res.json();
       return json.properties;
     },

@@ -138,7 +138,7 @@ const SalesPipeline = () => {
   const fetchAllAgents = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:3000/api/user/getAllAgents",
+        `${import.meta.env.VITE_URL}/api/user/getAllAgents`,
         { withCredentials: true }
       );
       setAgents(data);

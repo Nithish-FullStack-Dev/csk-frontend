@@ -86,7 +86,7 @@ interface CommissionEligibleLead extends Lead {
 
 const fetchAllCommission = async (): Promise<Commission[]> => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/commission/getAllCommissions",
+    `${import.meta.env.VITE_URL}/api/commission/getAllCommissions`,
     { withCredentials: true }
   );
   return Array.isArray(data) ? data : [];
@@ -96,7 +96,7 @@ const fetchCommissionEligibleLeads = async (): Promise<
   CommissionEligibleLead[]
 > => {
   const { data } = await axios.get(
-    "http://localhost:3000/api/leads/getClosedLeads",
+    `${import.meta.env.VITE_URL}/api/leads/getClosedLeads`,
     { withCredentials: true }
   );
   return Array.isArray(data)
@@ -153,7 +153,7 @@ const MyCommissions = () => {
       newCommission: Omit<Commission, "_id" | "clientId"> & { clientId: string }
     ) => {
       const { data } = await axios.post(
-        "http://localhost:3000/api/commission/addCommissions",
+        `${import.meta.env.VITE_URL}/api/commission/addCommissions`,
         newCommission
       );
       return data;
@@ -183,7 +183,9 @@ const MyCommissions = () => {
       status: "pending" | "paid";
     }) => {
       const { data } = await axios.put(
-        `http://localhost:3000/api/commission/updateCommissions/${updatedCommissionData._id}`,
+        `${import.meta.env.VITE_URL}/api/commission/updateCommissions/${
+          updatedCommissionData._id
+        }`,
         updatedCommissionData
       );
       return data;

@@ -107,7 +107,7 @@ export default function Permission() {
     };
 
     try {
-      await axios.post("http://localhost:3000/api/role/addRole", payload);
+      await axios.post(`${import.meta.env.VITE_URL}/api/role/addRole`, payload);
       toast.success("Role saved successfully", {
         description: `${selectedRole.replace(/_/g, " ")} permissions updated.`,
       });

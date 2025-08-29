@@ -148,7 +148,7 @@ const MySchedule = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:3000/api/user-schedule/schedule",
+        `${import.meta.env.VITE_URL}/api/user-schedule/schedule`,
         payload,
         { withCredentials: true }
       );
@@ -177,7 +177,7 @@ const MySchedule = () => {
   const fetchAppointments = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3000/api/user-schedule/schedules",
+        `${import.meta.env.VITE_URL}/api/user-schedule/schedules`,
         { withCredentials: true }
       );
 
@@ -199,11 +199,11 @@ const MySchedule = () => {
   const fetchDropdownData = async () => {
     try {
       const clientsRes = await axios.get(
-        "http://localhost:3000/api/user/getUsers",
+        `${import.meta.env.VITE_URL}/api/user/getUsers`,
         { withCredentials: true }
       ); // Replace with your actual route
       const propertiesRes = await axios.get(
-        "http://localhost:3000/api/properties/getProperties",
+        `${import.meta.env.VITE_URL}/api/properties/getProperties`,
         { withCredentials: true }
       );
 

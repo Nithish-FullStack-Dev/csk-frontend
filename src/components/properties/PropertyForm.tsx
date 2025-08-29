@@ -247,7 +247,7 @@ export function PropertyForm({
         const thumbForm = new FormData();
         thumbForm.append("file", thumbnailFile);
         const thumbRes = await axios.post(
-          "http://localhost:3000/api/uploads/upload",
+          `${import.meta.env.VITE_URL}/api/uploads/upload`,
           thumbForm,
           {
             headers: { "Content-Type": "multipart/form-data" },
@@ -264,7 +264,7 @@ export function PropertyForm({
           const formData = new FormData();
           formData.append("file", photo);
           const res = await axios.post(
-            "http://localhost:3000/api/uploads/upload",
+            `${import.meta.env.VITE_URL}/api/uploads/upload`,
             formData,
             {
               headers: { "Content-Type": "multipart/form-data" },
@@ -329,12 +329,12 @@ export function PropertyForm({
 
       const response = isEditing
         ? await axios.put(
-            `http://localhost:3000/api/properties/updateProperty/${property.id}`,
+            `${import.meta.env.VITE_URL}/api/properties/updateProperty/${property.id}`,
             transformedPayload,
             config
           )
         : await axios.post(
-            "http://localhost:3000/api/properties/addProperty",
+            `${import.meta.env.VITE_URL}/api/properties/addProperty`,
             transformedPayload,
             config
           );
