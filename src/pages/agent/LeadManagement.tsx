@@ -643,13 +643,6 @@ const LeadManagement = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
-
-            {!isSalesManager && (
-              <Button variant="outline">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
-              </Button>
-            )}
           </div>
         </div>
 
@@ -664,7 +657,6 @@ const LeadManagement = () => {
             />
           </div>
         </div>
-
         <Card>
           <CardHeader className="p-4 pb-0">
             <Tabs defaultValue="all" onValueChange={setActiveTab}>
@@ -677,7 +669,8 @@ const LeadManagement = () => {
             </Tabs>
           </CardHeader>
           <CardContent className="p-0">
-            <Table>
+            {/* Desktop Table */}
+            <Table className="hidden sm:table">
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -695,7 +688,7 @@ const LeadManagement = () => {
               <TableBody>
                 {filteredLeads.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5}>
+                    <TableCell colSpan={6}>
                       <div className="text-center py-12 text-gray-500">
                         <div className="text-4xl mb-2">😕</div>
                         <h1 className="text-lg font-semibold">
@@ -724,33 +717,26 @@ const LeadManagement = () => {
                       Rejected: "bg-red-100 text-red-800",
                     };
 
-                    // Determine the ID, handling if lead.property is already an object
+                    // Determine property name
                     const leadPropertyId =
                       typeof lead.property === "object"
                         ? lead.property._id
                         : lead.property;
-
                     const interestedProperty = availableProperties.find(
                       (prop) => prop._id === leadPropertyId
                     );
-
-                    let propertyDisplayName = "N/A"; // Default to N/A
-
+                    let propertyDisplayName = "N/A";
                     if (interestedProperty) {
-                      // Found in availableProperties
                       propertyDisplayName = `${interestedProperty.basicInfo.projectName} - ${interestedProperty.basicInfo.plotNumber}`;
                     } else if (
                       typeof lead.property === "object" &&
-                      lead.property !== null &&
                       "basicInfo" in lead.property
                     ) {
-                      // If lead.property is already the full object, use its basicInfo
                       propertyDisplayName = `${lead.property.basicInfo.projectName} - ${lead.property.basicInfo.plotNumber}`;
                     } else if (
                       typeof lead.property === "string" &&
                       lead.property
                     ) {
-                      // If it's a string but not found in availableProperties, display the ID
                       propertyDisplayName = lead.property;
                     }
 
@@ -839,7 +825,7 @@ const LeadManagement = () => {
                                 )}
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
-                                  onClick={() => setLeadToEdit(lead)} // Set the lead to be edited
+                                  onClick={() => setLeadToEdit(lead)}
                                 >
                                   <FileText className="mr-2 h-4 w-4" /> Edit
                                 </DropdownMenuItem>
@@ -853,6 +839,165 @@ const LeadManagement = () => {
                 )}
               </TableBody>
             </Table>
+
+            {/* Mobile Cards */}
+            <div className="sm:hidden space-y-4 p-4">
+              {filteredLeads.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <div className="text-4xl mb-2">😕</div>
+                  <h1 className="text-lg font-semibold">No Leads Found</h1>
+                  <p className="text-sm text-gray-400">
+                    Try changing your filters or add a new lead.
+                  </p>
+                </div>
+              ) : (
+                filteredLeads.map((lead) => {
+                  const statusColors = {
+                    hot: "bg-estate-error/20 text-estate-error",
+                    warm: "bg-estate-gold/20 text-estate-gold",
+                    cold: "bg-estate-teal/20 text-estate-teal",
+                  };
+                  const propertyStatusColors: Record<string, string> = {
+                    New: "bg-blue-100 text-blue-800",
+                    Enquiry: "bg-yellow-100 text-yellow-800",
+                    Assigned: "bg-purple-100 text-purple-800",
+                    "Follow up": "bg-orange-100 text-orange-800",
+                    "In Progress": "bg-indigo-100 text-indigo-800",
+                    Closed: "bg-green-100 text-green-800",
+                    Rejected: "bg-red-100 text-red-800",
+                  };
+
+                  const leadPropertyId =
+                    typeof lead.property === "object"
+                      ? lead.property._id
+                      : lead.property;
+                  const interestedProperty = availableProperties.find(
+                    (prop) => prop._id === leadPropertyId
+                  );
+                  let propertyDisplayName = "N/A";
+                  if (interestedProperty) {
+                    propertyDisplayName = `${interestedProperty.basicInfo.projectName} - ${interestedProperty.basicInfo.plotNumber}`;
+                  } else if (
+                    typeof lead.property === "object" &&
+                    "basicInfo" in lead.property
+                  ) {
+                    propertyDisplayName = `${lead.property.basicInfo.projectName} - ${lead.property.basicInfo.plotNumber}`;
+                  } else if (
+                    typeof lead.property === "string" &&
+                    lead.property
+                  ) {
+                    propertyDisplayName = lead.property;
+                  }
+
+                  return (
+                    <div
+                      key={lead._id}
+                      className="bg-white border rounded-lg shadow p-4 space-y-2"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar>
+                          <AvatarImage
+                            src={`https://ui-avatars.com/api/?name=${lead.name.replace(
+                              " ",
+                              "+"
+                            )}&background=1A365D&color=fff`}
+                          />
+                          <AvatarFallback>{lead.name[0]}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{lead.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {lead.email}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Status:</span>
+                        <Badge
+                          className={
+                            statusColors[
+                              lead?.status as keyof typeof statusColors
+                            ]
+                          }
+                        >
+                          {lead.status}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Property:</span>
+                        <span>{propertyDisplayName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Property Status:</span>
+                        <Badge
+                          className={
+                            propertyStatusColors[
+                              lead?.propertyStatus as keyof typeof propertyStatusColors
+                            ]
+                          }
+                        >
+                          {lead.propertyStatus}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Last Contact:</span>
+                        <span>
+                          {lead?.lastContact
+                            ? formatDistanceToNow(new Date(lead.lastContact), {
+                                addSuffix: true,
+                              })
+                            : "N/A"}
+                        </span>
+                      </div>
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 flex items-center justify-center"
+                          onClick={() => setSelectedLead(lead)}
+                        >
+                          <ChevronRight className="h-4 w-4 mr-1" /> View
+                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="flex-1 flex items-center justify-center"
+                            >
+                              <MoreHorizontal className="h-4 w-4 mr-1" />{" "}
+                              Actions
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                              <PhoneCall className="mr-2 h-4 w-4" /> Call
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              <Mail className="mr-2 h-4 w-4" /> Email
+                            </DropdownMenuItem>
+                            {!isSalesManager && (
+                              <DropdownMenuItem
+                                onClick={() => navigate("/visits")}
+                              >
+                                <Calendar className="mr-2 h-4 w-4" /> Schedule
+                                Visit
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => setLeadToEdit(lead)}
+                            >
+                              <FileText className="mr-2 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </CardContent>
           <CardFooter className="flex justify-between p-4">
             <div className="text-sm text-muted-foreground">

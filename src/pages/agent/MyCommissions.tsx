@@ -638,12 +638,29 @@ const MyCommissions = () => {
           </CardHeader>
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3">
+              {/* Desktop Tabs */}
+              <TabsList className="hidden md:grid grid-cols-3 w-full mb-4">
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="paid">Paid</TabsTrigger>
                 <TabsTrigger value="pending">Pending</TabsTrigger>
               </TabsList>
-              <div className="mt-6">
+
+              {/* Mobile Tabs as Select */}
+              <div className="md:hidden mb-4">
+                <Select value={activeTab} onValueChange={setActiveTab}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="paid">Paid</SelectItem>
+                    <SelectItem value="pending">Pending</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Desktop Table */}
+              <div className="hidden md:block">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -767,8 +784,100 @@ const MyCommissions = () => {
                   </TableBody>
                 </Table>
               </div>
+
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-4">
+                {filteredCommissions.length > 0 ? (
+                  filteredCommissions.map((commission) => (
+                    <div
+                      key={commission._id}
+                      className="border rounded-lg p-4 bg-white shadow-sm space-y-2"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-6 w-6">
+                          <AvatarImage
+                            src={commission.clientId.addedBy?.avatar || ""}
+                          />
+                          <AvatarFallback>
+                            {commission.clientId.addedBy?.name
+                              ? commission.clientId.addedBy.name[0]
+                              : "N/A"}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span className="font-medium">
+                          {commission.clientId.addedBy?.name || "N/A"}
+                        </span>
+                      </div>
+
+                      <div>
+                        <span className="font-medium">Property:</span>{" "}
+                        {commission.clientId.property?.basicInfo?.projectName ||
+                          "N/A"}
+                        <p className="text-xs text-muted-foreground">
+                          Unit:{" "}
+                          {commission.clientId.property?.basicInfo
+                            ?.plotNumber || "N/A"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <span className="font-medium">Commission:</span>{" "}
+                        {commission.commissionAmount} (
+                        {commission.commissionPercent} of ₹
+                        {(
+                          commission.clientId.property?.financialDetails
+                            ?.totalAmount || 0
+                        ).toLocaleString("en-IN")}
+                        )
+                      </div>
+
+                      <div>
+                        <span className="font-medium">Sale Date:</span>{" "}
+                        {commission.saleDate
+                          ? format(new Date(commission.saleDate), "MMM d, yyyy")
+                          : "N/A"}
+                      </div>
+
+                      <div>
+                        <span className="font-medium">Status:</span>{" "}
+                        <Badge
+                          className={
+                            commission.status === "paid"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-yellow-100 text-yellow-800"
+                          }
+                        >
+                          {commission.status === "paid" ? "Paid" : "Pending"}
+                        </Badge>
+                      </div>
+
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => setSelectedCommission(commission)}
+                        >
+                          <Info className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => handleEditCommissionClick(commission)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-muted-foreground py-8">
+                    No commissions found for this category.
+                  </div>
+                )}
+              </div>
             </Tabs>
           </CardContent>
+
           <CardFooter>
             <div className="text-sm text-muted-foreground">
               Showing {filteredCommissions.length} of {actualCommissions.length}{" "}
@@ -782,7 +891,7 @@ const MyCommissions = () => {
             open={!!selectedCommission}
             onOpenChange={() => setSelectedCommission(null)}
           >
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="max-w-[90vw] max-h-[80vh] rounded-xl overflow-scroll">
               <DialogHeader>
                 <DialogTitle>Commission Details</DialogTitle>
                 <DialogDescription>
@@ -945,7 +1054,7 @@ const MyCommissions = () => {
           open={isAddEditDialogOpen}
           onOpenChange={setIsAddEditDialogOpen}
         >
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="max-w-[90vw] max-h-[80vh] rounded-xl overflow-scroll">
             <DialogHeader>
               <DialogTitle>
                 {isEditing ? "Edit Commission" : "Add New Commission"}

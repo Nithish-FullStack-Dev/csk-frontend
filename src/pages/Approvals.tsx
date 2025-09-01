@@ -301,7 +301,7 @@ const Approvals = () => {
                   className="hover:shadow-md transition-shadow"
                 >
                   <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between md:flex-row flex-col gap-5">
                       <div className="flex items-start space-x-4">
                         <Avatar className="h-12 w-12">
                           <AvatarImage src={request.bookedBy?.avatar || ""} />

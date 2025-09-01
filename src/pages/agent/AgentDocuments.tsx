@@ -152,6 +152,7 @@ const AgentDocuments = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [docPreview, setDocPreview] = useState<Document | null>(null);
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("all_docs");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false); // New state for edit dialog
   const [editingDocument, setEditingDocument] = useState<Document | null>(null); // New state for document being edited
   const [newDocument, setNewDocument] = useState({
@@ -547,14 +548,32 @@ const AgentDocuments = () => {
           </Button>
         </div>
 
-        <Tabs defaultValue="all_docs" onValueChange={setCurrentTab}>
-          {" "}
-          {/* Added onValueChange */}
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs
+          value={currentTab}
+          onValueChange={setCurrentTab}
+          className="w-full"
+        >
+          {/* Desktop Tabs */}
+          <TabsList className="hidden md:grid w-full grid-cols-3 mb-4">
             <TabsTrigger value="all_docs">All Documents</TabsTrigger>
             <TabsTrigger value="pending_review">Pending Review</TabsTrigger>
             <TabsTrigger value="missing">Missing</TabsTrigger>
           </TabsList>
+
+          {/* Mobile Select */}
+          <div className="md:hidden mb-4">
+            <Select value={currentTab} onValueChange={setCurrentTab}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Section" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all_docs">All Documents</SelectItem>
+                <SelectItem value="pending_review">Pending Review</SelectItem>
+                <SelectItem value="missing">Missing</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <TabsContent value="all_docs" className="mt-6">
             <Card>
               <CardHeader>
@@ -564,29 +583,30 @@ const AgentDocuments = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      {!isCustomerPurchased && (
+                {/* Desktop Table */}
+                <div className="hidden md:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        {!isCustomerPurchased && (
+                          <TableHead className="hidden md:table-cell">
+                            Client
+                          </TableHead>
+                        )}
                         <TableHead className="hidden md:table-cell">
-                          Client
+                          Property
                         </TableHead>
-                      )}
-                      <TableHead className="hidden md:table-cell">
-                        Property
-                      </TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Uploaded
-                      </TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredDocuments.length > 0 ? (
-                      filteredDocuments.map((doc) => {
-                        return (
+                        <TableHead>Status</TableHead>
+                        <TableHead className="hidden md:table-cell">
+                          Uploaded
+                        </TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredDocuments.length > 0 ? (
+                        filteredDocuments.map((doc) => (
                           <TableRow key={doc._id}>
                             <TableCell>
                               <div className="flex items-center gap-3">
@@ -616,13 +636,8 @@ const AgentDocuments = () => {
                                 </div>
                               </TableCell>
                             )}
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <span>
-                                  {doc?.property?.basicInfo?.projectName ||
-                                    "N/A"}
-                                </span>
-                              </div>
+                            <TableCell className="hidden md:table-cell">
+                              {doc?.property?.basicInfo?.projectName || "N/A"}
                             </TableCell>
                             <TableCell>
                               <Badge
@@ -655,7 +670,7 @@ const AgentDocuments = () => {
                                 >
                                   <Download className="h-4 w-4" />
                                 </Button>
-                                {!isCustomerPurchased && ( // Only show edit for non-customer_purchased roles
+                                {!isCustomerPurchased && (
                                   <Button
                                     variant="outline"
                                     size="icon"
@@ -670,21 +685,114 @@ const AgentDocuments = () => {
                               </div>
                             </TableCell>
                           </TableRow>
-                        );
-                      })
-                    ) : (
-                      <TableRow>
-                        <TableCell
-                          colSpan={isCustomerPurchased ? 5 : 6} // Adjust colspan based on role
-                          className="text-center py-8 text-muted-foreground"
-                        >
-                          No documents found.
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell
+                            colSpan={isCustomerPurchased ? 5 : 6}
+                            className="text-center py-8 text-muted-foreground"
+                          >
+                            No documents found.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden space-y-4">
+                  {filteredDocuments.length > 0 ? (
+                    filteredDocuments.map((doc) => (
+                      <div
+                        key={doc._id}
+                        className="border rounded-lg p-4 bg-white shadow-sm space-y-2"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="bg-muted rounded-md p-2">
+                            <FileText className="h-4 w-4 text-estate-navy" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{doc.docName}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {doc.format} • {doc.size}
+                            </p>
+                          </div>
+                        </div>
+
+                        {!isCustomerPurchased && doc?.docOfUser && (
+                          <div className="flex items-center gap-2">
+                            <Avatar className="h-6 w-6">
+                              <AvatarImage src={doc.docOfUser.avatar} />
+                              <AvatarFallback>
+                                {doc.docOfUser.name?.[0] || (
+                                  <UserCircle className="h-4 w-4" />
+                                )}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>{doc.docOfUser.name || "N/A"}</span>
+                          </div>
+                        )}
+
+                        <div>
+                          <span className="font-medium">Property:</span>{" "}
+                          {doc?.property?.basicInfo?.projectName || "N/A"}
+                        </div>
+
+                        <div>
+                          <span className="font-medium">Status:</span>{" "}
+                          <Badge
+                            className={`flex items-center max-w-[50%] ${
+                              statusColors[doc.status]
+                            }`}
+                          >
+                            {statusIcons[doc.status]} {statusLabels[doc.status]}
+                          </Badge>
+                        </div>
+
+                        <div>
+                          <span className="font-medium">Uploaded:</span>{" "}
+                          {format(new Date(doc.uploadedAt), "MMM d, yyyy")}
+                        </div>
+
+                        <div className="flex items-center gap-2 mt-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => setDocPreview(doc)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => window.open(doc.filePath, "_blank")}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                          {!isCustomerPurchased && (
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => {
+                                setEditingDocument(doc);
+                                setIsEditDialogOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No documents found.
+                    </div>
+                  )}
+                </div>
               </CardContent>
+
               <CardFooter>
                 <div className="text-sm text-muted-foreground">
                   Showing {filteredDocuments.length} of {documents?.length || 0}{" "}
@@ -841,7 +949,7 @@ const AgentDocuments = () => {
         {/* Document Preview Dialog */}
         {docPreview && (
           <Dialog open={!!docPreview} onOpenChange={() => setDocPreview(null)}>
-            <DialogContent className="sm:max-w-[700px]">
+            <DialogContent className="sm:max-w-[700px] max-h-[80dvh] max-w-[90dvw] rounded-xl">
               <DialogHeader>
                 <DialogTitle>Document Preview</DialogTitle>
                 <DialogDescription>
@@ -887,7 +995,7 @@ const AgentDocuments = () => {
         {/* Document Edit Dialog */}
         {editingDocument && (
           <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="max-w-[90vw] max-h-[80vh] rounded-xl ">
               <DialogHeader>
                 <DialogTitle>Edit Document</DialogTitle>
                 <DialogDescription>

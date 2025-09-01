@@ -23,7 +23,7 @@ import {
   BarChart3,
   Award,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useAuth } from "@/contexts/AuthContext";
@@ -65,7 +65,7 @@ interface User {
 
 const fetchUnassignedMem = async (): Promise<User[]> => {
   const { data } = await axios.get(
-    `${import.meta.env.VITE_URL}/api/team/unassigned`,
+    "http://localhost:3000/api/team/unassigned",
     { withCredentials: false }
   );
   return data.data || [];
@@ -76,9 +76,6 @@ const TeamManagement = () => {
   const [sortBy, setSortBy] = useState("performance");
   const [filterStatus, setFilterStatus] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
-
   const [status, setStatus] = useState<"active" | "training" | "on-leave">(
     "active"
   );
@@ -94,26 +91,6 @@ const TeamManagement = () => {
 
   const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (editingMember) {
-      setAgentId(editingMember.agentId._id);
-      setStatus(editingMember.status as "active" | "training" | "on-leave");
-      setPerformance(editingMember.performance);
-    } else {
-      // Reset form when not editing or dialog is closed
-      setAgentId("");
-      setStatus("active");
-      setPerformance({
-        sales: 0,
-        target: 0,
-        deals: 0,
-        leads: 0,
-        conversionRate: 0,
-        lastActivity: new Date().toISOString().slice(0, 16),
-      });
-    }
-  }, [editingMember]);
-
   const handlePerformanceChange = (field: string, value: string | number) => {
     setPerformance((prev) => ({
       ...prev,
@@ -123,7 +100,7 @@ const TeamManagement = () => {
 
   const fetchMyTeam = async (): Promise<TeamMember[]> => {
     const { data } = await axios.get(
-      `${import.meta.env.VITE_URL}/api/team/getAllTeam/${user._id}`,
+      `http://localhost:3000/api/team/getAllTeam/${user._id}`,
       { withCredentials: true }
     );
     console.log(data);
@@ -173,7 +150,7 @@ const TeamManagement = () => {
       teamLeadId: string;
     }) => {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_URL}/api/team/addTeamMember`,
+        "http://localhost:3000/api/team/addTeamMember",
         { agentId, status, performance, teamLeadId },
         { withCredentials: true }
       );
@@ -198,44 +175,6 @@ const TeamManagement = () => {
     onError: (err: any) => {
       const errorMessage =
         err.response?.data?.message || "Failed to add team member.";
-      toast.error(errorMessage);
-    },
-  });
-
-  const updateTeamMemberMutation = useMutation({
-    mutationFn: async ({
-      memberId,
-      status,
-      performance,
-    }: {
-      memberId: string;
-      status: "active" | "training" | "inactive" | "on-leave";
-      performance: {
-        sales: number;
-        target: number;
-        deals: number;
-        leads: number;
-        conversionRate: number;
-        lastActivity: string;
-      };
-    }) => {
-      const { data } = await axios.patch(
-        `${import.meta.env.VITE_URL}/api/team/updateTeam/${memberId}`,
-        { status, performance },
-        { withCredentials: true }
-      );
-      return data;
-    },
-    onSuccess: () => {
-      toast.success("Team member updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["teams", user?._id] });
-      setDialogOpen(false);
-      setIsEditing(false);
-      setEditingMember(null);
-    },
-    onError: (err: any) => {
-      const errorMessage =
-        err.response?.data?.message || "Failed to update team member.";
       toast.error(errorMessage);
     },
   });
@@ -277,43 +216,21 @@ const TeamManagement = () => {
   const teamPerformance =
     totalTeamTarget > 0 ? (totalTeamSales / totalTeamTarget) * 100 : 0;
 
-  const handleAddOrEditMemberSubmit = () => {
-    if (isEditing) {
-      if (editingMember) {
-        updateTeamMemberMutation.mutate({
-          memberId: editingMember._id,
-          status,
-          performance,
-        });
-      }
-    } else {
-      if (!agentId) {
-        toast.error("Please select an agent.");
-        return;
-      }
-      if (user?._id) {
-        addTeamMemberMutation.mutate({
-          agentId,
-          status,
-          performance,
-          teamLeadId: user._id,
-        });
-      } else {
-        toast.error("User not authenticated.");
-      }
+  const handleAddMemberSubmit = () => {
+    if (!agentId) {
+      toast.error("Please select an agent.");
+      return;
     }
-  };
-
-  const handleOpenAddDialog = () => {
-    setIsEditing(false);
-    setEditingMember(null); // Clear any previous editing data
-    setDialogOpen(true);
-  };
-
-  const handleOpenEditDialog = (member: TeamMember) => {
-    setIsEditing(true);
-    setEditingMember(member);
-    setDialogOpen(true);
+    if (user?._id) {
+      addTeamMemberMutation.mutate({
+        agentId,
+        status,
+        performance,
+        teamLeadId: user._id,
+      });
+    } else {
+      toast.error("User not authenticated.");
+    }
   };
 
   const sortedAndFilteredTeamMembers = teamMembers
@@ -349,7 +266,7 @@ const TeamManagement = () => {
               Manage your sales team and track their performance
             </p>
           </div>
-          <div className="flex items-center space-x-2 mt-4 md:mt-0">
+          <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2 mt-4">
             <Select value={sortBy} onValueChange={setSortBy}>
               <SelectTrigger className="w-[150px]">
                 <SelectValue placeholder="Sort by" />
@@ -372,7 +289,7 @@ const TeamManagement = () => {
                 <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
-            <Button onClick={handleOpenAddDialog}>
+            <Button onClick={() => setDialogOpen(true)}>
               <UserPlus className="mr-2 h-4 w-4" />
               Add Member
             </Button>
@@ -478,11 +395,7 @@ const TeamManagement = () => {
                         </Badge>
                       </div>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleOpenEditDialog(member)}
-                    >
+                    <Button size="sm" variant="ghost">
                       <Settings className="h-4 w-4" />
                     </Button>
                   </div>
@@ -645,13 +558,10 @@ const TeamManagement = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>
-                {isEditing ? "Edit Team Member" : "Add New Team Member"}
-              </DialogTitle>
+              <DialogTitle>Add New Team Member</DialogTitle>
               <DialogDescription>
-                {isEditing
-                  ? "Update the details for this team member."
-                  : "Select an agent, assign status, and optionally set performance metrics."}
+                Select an agent, assign status, and optionally set performance
+                metrics.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -659,11 +569,7 @@ const TeamManagement = () => {
                 <Label htmlFor="agent" className="text-right">
                   Agent
                 </Label>
-                <Select
-                  onValueChange={setAgentId}
-                  value={agentId}
-                  disabled={isEditing} // Disable agent selection when editing
-                >
+                <Select onValueChange={setAgentId} value={agentId}>
                   <SelectTrigger className="col-span-3">
                     <SelectValue placeholder="Select an agent" />
                   </SelectTrigger>
@@ -694,9 +600,6 @@ const TeamManagement = () => {
                     <SelectItem value="active">Active</SelectItem>
                     <SelectItem value="training">Training</SelectItem>
                     <SelectItem value="on-leave">On-Leave</SelectItem>
-                    {isEditing && ( // Allow selecting 'inactive' only when editing
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -730,7 +633,7 @@ const TeamManagement = () => {
                 <Input
                   type="datetime-local"
                   id="lastActivity"
-                  value={performance.lastActivity.slice(0, 16)} // Ensure format for datetime-local
+                  value={performance.lastActivity}
                   onChange={(e) =>
                     handlePerformanceChange("lastActivity", e.target.value)
                   }
@@ -744,20 +647,10 @@ const TeamManagement = () => {
                 Cancel
               </Button>
               <Button
-                onClick={handleAddOrEditMemberSubmit}
-                disabled={
-                  addTeamMemberMutation.isPending ||
-                  updateTeamMemberMutation.isPending ||
-                  (!isEditing && !agentId)
-                }
+                onClick={handleAddMemberSubmit}
+                disabled={addTeamMemberMutation.isPending || !agentId}
               >
-                {isEditing
-                  ? updateTeamMemberMutation.isPending
-                    ? "Updating..."
-                    : "Update Member"
-                  : addTeamMemberMutation.isPending
-                  ? "Adding..."
-                  : "Add Member"}
+                {addTeamMemberMutation.isPending ? "Adding..." : "Add Member"}
               </Button>
             </DialogFooter>
           </DialogContent>

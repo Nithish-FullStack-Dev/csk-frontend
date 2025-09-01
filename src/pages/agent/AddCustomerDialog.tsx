@@ -90,7 +90,7 @@ export function AddCustomerDialog({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[525px]">
+      <DialogContent className="max-w-[90vw] max-h-[80vh] rounded-xl overflow-scroll">
         <DialogHeader>
           <DialogTitle>Add New Customer</DialogTitle>
           <DialogDescription>

@@ -248,7 +248,7 @@ const MySchedule = () => {
               </Button>
             </DialogTrigger>
 
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="sm:max-w-[600px] max-h-[80dvh] max-w-[90vw] rounded-lg overflow-scroll">
               <DialogHeader>
                 <DialogTitle>New Appointment</DialogTitle>
               </DialogHeader>

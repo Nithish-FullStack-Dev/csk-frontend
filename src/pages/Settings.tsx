@@ -33,6 +33,7 @@ const Settings = () => {
   const [smsNotifications, setSmsNotifications] = useState(false);
   const [autoBackup, setAutoBackup] = useState(true);
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [activeTab, setActiveTab] = useState("general");
 
   return (
     <MainLayout>
@@ -44,8 +45,13 @@ const Settings = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-6"
+        >
+          {/* Desktop Tabs */}
+          <TabsList className="hidden md:grid grid-cols-6 w-full mb-4">
             <TabsTrigger value="general">General</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="security">Security</TabsTrigger>
@@ -53,6 +59,23 @@ const Settings = () => {
             <TabsTrigger value="integrations">Integrations</TabsTrigger>
             <TabsTrigger value="maintenance">Maintenance</TabsTrigger>
           </TabsList>
+
+          {/* Mobile Tabs as Select */}
+          <div className="md:hidden mb-4">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Section" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="general">General</SelectItem>
+                <SelectItem value="notifications">Notifications</SelectItem>
+                <SelectItem value="security">Security</SelectItem>
+                <SelectItem value="database">Database</SelectItem>
+                <SelectItem value="integrations">Integrations</SelectItem>
+                <SelectItem value="maintenance">Maintenance</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           <TabsContent value="general" className="space-y-6">
             <Card>

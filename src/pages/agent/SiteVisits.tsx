@@ -100,7 +100,7 @@ interface Lead {
   notes: string;
 }
 
-interface SiteVisitData {
+export interface SiteVisitData {
   _id: string;
   clientId: Lead;
   vehicleId: Vehicle;
@@ -470,7 +470,7 @@ const SiteVisits = () => {
 
         {/* Dialog for Booking a Site Visit */}
         <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-          <DialogContent className="sm:max-w-[600px] sm:max-h-[90vh] overflow-auto">
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] max-w-[90vw] rounded-xl overflow-y-auto  overflow-x-hidden ">
             <DialogHeader>
               <DialogTitle>Book a Site Visit</DialogTitle>
               <DialogDescription>
@@ -709,7 +709,7 @@ const SiteVisits = () => {
           open={!!selectedVisit}
           onOpenChange={() => setSelectedVisit(null)}
         >
-          <DialogContent className="sm:max-w-[600px] sm:max-h-[90vh] overflow-auto">
+          <DialogContent className="sm:max-w-[600px] max-h-[80vh] max-w-[90vw] rounded-xl overflow-auto">
             <DialogHeader>
               <DialogTitle>Site Visit Details</DialogTitle>
               <DialogDescription>
