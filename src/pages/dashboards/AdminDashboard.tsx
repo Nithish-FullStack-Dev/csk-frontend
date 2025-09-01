@@ -179,22 +179,6 @@ const AdminDashboard = () => {
               </div>
             </Link>
 
-            <Link to="/analytics" className="group block">
-              <div className="border rounded-lg p-6 transition-all hover:border-primary hover:shadow-sm">
-                <div className="flex items-center">
-                  <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mr-4 group-hover:bg-primary/20">
-                    <FileText className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-medium">Business Analytics</h3>
-                    <p className="text-sm text-muted-foreground">
-                      View business performance metrics
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
             <Link to="/settings" className="group block">
               <div className="border rounded-lg p-6 transition-all hover:border-primary hover:shadow-sm">
                 <div className="flex items-center">

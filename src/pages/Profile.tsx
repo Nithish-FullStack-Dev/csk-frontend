@@ -4,16 +4,7 @@ import RoleSpecificStats from "@/components/profile/RoleSpecificStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  Shield,
-  Calendar,
-  MapPin,
-  Clock,
-  Settings,
-  Bell,
-  Lock,
-  Activity,
-} from "lucide-react";
+import { Shield, Calendar, Clock } from "lucide-react";
 
 const Profile = () => {
   const { user } = useAuth();
@@ -86,13 +77,16 @@ const Profile = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-md font-vidaloka">Profile</h1>
-          <div className="flex items-center gap-2">
+      <div className="space-y-6 p-0 sm:p-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <h1 className="text-2xl sm:text-3xl font-md font-vidaloka">
+            Profile
+          </h1>
+          <div className="flex items-center gap-2 text-sm sm:text-base">
             <Clock className="h-4 w-4 text-muted-foreground" />
             {user && user.updatedAt && (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-muted-foreground">
                 Last updated:{" "}
                 {new Date(user.updatedAt).toLocaleDateString("en-GB")}
               </span>
@@ -100,54 +94,31 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Section */}
           <div className="lg:col-span-2 space-y-6">
             <ProfileForm />
             {/* <RoleSpecificStats /> */}
           </div>
 
+          {/* Right Section */}
           <div className="space-y-6">
-            {/* Quick Actions */}
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Quick Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted cursor-pointer">
-                  <Bell className="h-4 w-4" />
-                  <span className="text-sm font-sans">
-                    Notification Settings
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted cursor-pointer">
-                  <Lock className="h-4 w-4" />
-                  <span className="text-sm font-sans">Change Password</span>
-                </div>
-                <div className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted cursor-pointer">
-                  <Activity className="h-4 w-4" />
-                  <span className="text-sm font-sans">Activity Log</span>
-                </div>
-              </CardContent>
-            </Card> */}
-
             {/* Permissions */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-sans">
+                <CardTitle className="flex items-center gap-2 font-sans text-base sm:text-lg">
                   <Shield className="h-5 w-5" />
                   Permissions
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="flex flex-wrap gap-2">
                   {getPermissions().map((permission, index) => (
                     <Badge
                       key={index}
                       variant="secondary"
-                      className="mr-2 mb-2"
+                      className="whitespace-nowrap"
                     >
                       {permission}
                     </Badge>
@@ -159,13 +130,13 @@ const Profile = () => {
             {/* Account Info */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-sans">
+                <CardTitle className="flex items-center gap-2 font-sans text-base sm:text-lg">
                   <Calendar className="h-5 w-5" />
                   Account Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 ">
-                <div className="flex justify-between text-sm">
+              <CardContent className="space-y-3">
+                <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1 sm:gap-0">
                   <span className="text-muted-foreground font-sans">
                     Member Since:
                   </span>
@@ -178,15 +149,15 @@ const Profile = () => {
                       })}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1 sm:gap-0">
                   <span className="text-muted-foreground font-sans">
                     Account Status:
                   </span>
-                  <Badge variant="default" className="bg-green-500">
+                  <Badge variant="default" className="bg-green-500 w-fit">
                     Active
                   </Badge>
                 </div>
-                <div className="flex justify-between text-sm">
+                <div className="flex flex-col sm:flex-row sm:justify-between text-sm gap-1 sm:gap-0">
                   <span className="text-muted-foreground font-sans">
                     Last Login:
                   </span>

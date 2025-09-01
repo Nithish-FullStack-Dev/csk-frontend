@@ -37,9 +37,10 @@ const SidebarHeader = ({ collapsed, toggleCollapsed }: SidebarHeaderProps) => {
         />
       )}
 
+      {/* Collapse button hidden on mobile (sm:) */}
       <button
         onClick={toggleCollapsed}
-        className="p-1 rounded-md hover:bg-white/10 text-white transition-all duration-300"
+        className="hidden sm:block p-1 rounded-md hover:bg-white/10 text-white transition-all duration-300"
       >
         {collapsed ? (
           <ChevronRight className="h-5 w-5" />

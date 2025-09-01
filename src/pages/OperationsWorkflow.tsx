@@ -1,25 +1,52 @@
-
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, 
-  ResponsiveContainer, CartesianGrid 
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
 } from "recharts";
 import { toast } from "sonner";
 import {
-  CheckCircle2, Clock, AlertTriangle, XCircle,
-  CalendarDays, ClipboardList, Building, TrendingUp,
-  BarChart2, ArrowUpRight, ArrowRight, PlusCircle,
-  Calendar, Truck, Users, Plus, Workflow, ListChecks
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
+  CalendarDays,
+  ClipboardList,
+  TrendingUp,
+  ArrowRight,
+  PlusCircle,
+  Calendar,
+  Truck,
+  Users,
+  Plus,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import AddConstructionTaskDialog from "@/components/operations/AddConstructionTaskDialog";
 import ConstructionTaskList from "@/components/operations/ConstructionTaskList";
 import ConstructionPhaseViewer from "@/components/operations/ConstructionPhaseViewer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Sample data for projects
 const constructionProjects = [
@@ -34,7 +61,7 @@ const constructionProjects = [
     completedMilestones: 9,
     totalMilestones: 12,
     teamSize: 42,
-    contractorName: "BuildWell Construction Inc."
+    contractorName: "BuildWell Construction Inc.",
   },
   {
     id: "2",
@@ -47,7 +74,7 @@ const constructionProjects = [
     completedMilestones: 3,
     totalMilestones: 10,
     teamSize: 28,
-    contractorName: "Elite Builders Ltd."
+    contractorName: "Elite Builders Ltd.",
   },
   {
     id: "3",
@@ -60,7 +87,7 @@ const constructionProjects = [
     completedMilestones: 14,
     totalMilestones: 15,
     teamSize: 35,
-    contractorName: "RiverEdge Contractors"
+    contractorName: "RiverEdge Contractors",
   },
   {
     id: "4",
@@ -73,7 +100,7 @@ const constructionProjects = [
     completedMilestones: 2,
     totalMilestones: 14,
     teamSize: 22,
-    contractorName: "Summit Construction Group"
+    contractorName: "Summit Construction Group",
   },
   {
     id: "5",
@@ -86,8 +113,8 @@ const constructionProjects = [
     completedMilestones: 0,
     totalMilestones: 12,
     teamSize: 0,
-    contractorName: "GreenSpace Developers"
-  }
+    contractorName: "GreenSpace Developers",
+  },
 ];
 
 // Sample data for charts
@@ -127,8 +154,11 @@ const OperationsWorkflow = () => {
   const [showAddTaskDialog, setShowAddTaskDialog] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
+  // Track active tab
+  const [activeTab, setActiveTab] = useState("projects");
+
   const getStatusBadge = (status: string) => {
-    switch(status) {
+    switch (status) {
       case "planning":
         return (
           <Badge className="bg-blue-100 text-blue-800" variant="outline">
@@ -203,8 +233,9 @@ const OperationsWorkflow = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="projects" className="w-full">
-          <TabsList className="mb-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          {/* Desktop Tabs */}
+          <TabsList className="mb-4 hidden md:block">
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="tasks">Construction Tasks</TabsTrigger>
             <TabsTrigger value="milestones">Milestones</TabsTrigger>
@@ -212,6 +243,23 @@ const OperationsWorkflow = () => {
             <TabsTrigger value="resources">Resources</TabsTrigger>
           </TabsList>
 
+          {/* Mobile Select */}
+          <div className="md:hidden mb-4">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Section" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="projects">Projects</SelectItem>
+                <SelectItem value="tasks">Construction Tasks</SelectItem>
+                <SelectItem value="milestones">Milestones</SelectItem>
+                <SelectItem value="issues">Issues</SelectItem>
+                <SelectItem value="resources">Resources</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* --- Tab Contents --- */}
           <TabsContent value="projects">
             <div className="grid grid-cols-1 gap-6">
               {projects.map((project) => (
@@ -232,48 +280,70 @@ const OperationsWorkflow = () => {
                   <CardContent className="pt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                       <div className="space-y-2">
-                        <span className="text-sm text-muted-foreground">Progress</span>
+                        <span className="text-sm text-muted-foreground">
+                          Progress
+                        </span>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium">{project.progress}%</span>
+                          <span className="text-sm font-medium">
+                            {project.progress}%
+                          </span>
                         </div>
                         <Progress value={project.progress} />
                       </div>
 
                       <div className="space-y-1">
-                        <span className="text-sm text-muted-foreground">Timeline</span>
+                        <span className="text-sm text-muted-foreground">
+                          Timeline
+                        </span>
                         <div className="flex items-center mt-1">
                           <CalendarDays className="h-4 w-4 text-muted-foreground mr-1" />
-                          <span className="text-sm">{new Date(project.startDate).toLocaleDateString()} - {new Date(project.endDate).toLocaleDateString()}</span>
+                          <span className="text-sm">
+                            {new Date(project.startDate).toLocaleDateString()} -{" "}
+                            {new Date(project.endDate).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
 
                       <div className="space-y-1">
-                        <span className="text-sm text-muted-foreground">Milestones</span>
+                        <span className="text-sm text-muted-foreground">
+                          Milestones
+                        </span>
                         <div className="flex items-center mt-1">
                           <ClipboardList className="h-4 w-4 text-muted-foreground mr-1" />
-                          <span className="text-sm">{project.completedMilestones} of {project.totalMilestones} completed</span>
+                          <span className="text-sm">
+                            {project.completedMilestones} of{" "}
+                            {project.totalMilestones} completed
+                          </span>
                         </div>
                       </div>
 
                       <div className="space-y-1">
-                        <span className="text-sm text-muted-foreground">Team</span>
+                        <span className="text-sm text-muted-foreground">
+                          Team
+                        </span>
                         <div className="flex items-center mt-1">
                           <Users className="h-4 w-4 text-muted-foreground mr-1" />
-                          <span className="text-sm">{project.teamSize} members</span>
+                          <span className="text-sm">
+                            {project.teamSize} members
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="mt-6 flex justify-end">
-                      <Button 
-                        variant="outline" 
-                        onClick={() => handleAddTask(project.id)} 
-                        className="mr-2"
+                    <div className="mt-6 flex flex-col sm:flex-row justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => handleAddTask(project.id)}
+                        className="sm:mr-2"
                       >
                         <Plus className="mr-2 h-4 w-4" />
                         Add Construction Task
                       </Button>
-                      <Button variant="outline" onClick={handleScheduleInspection} className="mr-2">
+                      <Button
+                        variant="outline"
+                        onClick={handleScheduleInspection}
+                        className="sm:mr-2"
+                      >
                         <Calendar className="mr-2 h-4 w-4" />
                         Schedule Inspection
                       </Button>
@@ -312,18 +382,18 @@ const OperationsWorkflow = () => {
                         <XAxis dataKey="month" />
                         <YAxis tickFormatter={(value) => `${value}%`} />
                         <Tooltip formatter={(value) => `${value}%`} />
-                        <Line 
-                          type="monotone" 
-                          dataKey="planned" 
-                          stroke="#9ca3af" 
+                        <Line
+                          type="monotone"
+                          dataKey="planned"
+                          stroke="#9ca3af"
                           strokeDasharray="5 5"
                           strokeWidth={2}
                           name="Planned Progress"
                         />
-                        <Line 
-                          type="monotone" 
-                          dataKey="actual" 
-                          stroke="#4338ca" 
+                        <Line
+                          type="monotone"
+                          dataKey="actual"
+                          stroke="#4338ca"
                           strokeWidth={2}
                           activeDot={{ r: 8 }}
                           name="Actual Progress"
@@ -352,8 +422,16 @@ const OperationsWorkflow = () => {
                         <XAxis dataKey="milestone" />
                         <YAxis />
                         <Tooltip />
-                        <Bar dataKey="total" fill="#9ca3af" name="Total Tasks" />
-                        <Bar dataKey="completed" fill="#4338ca" name="Completed Tasks" />
+                        <Bar
+                          dataKey="total"
+                          fill="#9ca3af"
+                          name="Total Tasks"
+                        />
+                        <Bar
+                          dataKey="completed"
+                          fill="#4338ca"
+                          name="Completed Tasks"
+                        />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -381,8 +459,16 @@ const OperationsWorkflow = () => {
                       <XAxis dataKey="month" />
                       <YAxis />
                       <Tooltip />
-                      <Bar dataKey="resolved" fill="#16a34a" name="Resolved Issues" />
-                      <Bar dataKey="pending" fill="#f59e0b" name="Pending Issues" />
+                      <Bar
+                        dataKey="resolved"
+                        fill="#16a34a"
+                        name="Resolved Issues"
+                      />
+                      <Bar
+                        dataKey="pending"
+                        fill="#f59e0b"
+                        name="Pending Issues"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -397,8 +483,8 @@ const OperationsWorkflow = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-6">
-                  Resource allocation and management tools will be available here,
-                  including labor, equipment, and materials tracking.
+                  Resource allocation and management tools will be available
+                  here, including labor, equipment, and materials tracking.
                 </p>
                 <div className="h-80 bg-muted/30 rounded-md flex items-center justify-center">
                   <Truck className="w-16 h-16 text-muted/50" />
@@ -411,7 +497,7 @@ const OperationsWorkflow = () => {
 
       {/* Dialog for adding construction tasks */}
       {showAddTaskDialog && (
-        <AddConstructionTaskDialog 
+        <AddConstructionTaskDialog
           open={showAddTaskDialog}
           onOpenChange={setShowAddTaskDialog}
           projectId={selectedProject}

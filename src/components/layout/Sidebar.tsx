@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import SidebarHeader from "./sidebar/SidebarHeader";
 import SidebarNavigation from "./sidebar/SidebarNavigation";
 import SidebarFooter from "./sidebar/SidebarFooter";
+import { Menu, X } from "lucide-react";
 
 const Sidebar = () => {
   const { user } = useAuth();
@@ -22,7 +23,7 @@ const Sidebar = () => {
         className="md:hidden fixed top-4 left-4 z-50 bg-estate-blue text-white p-2 rounded-lg shadow-lg"
         onClick={toggleMobile}
       >
-        {mobileOpen ? "✖" : "☰"}
+        {mobileOpen ? <X color="#fff" /> : <Menu />}
       </button>
 
       {/* Sidebar */}

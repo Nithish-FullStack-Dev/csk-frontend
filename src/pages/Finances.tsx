@@ -35,6 +35,13 @@ import {
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Sample data for charts
 const revenueData = [
@@ -83,6 +90,7 @@ const quarterlyRevenueData = [
 
 const Finances = () => {
   const [timeframe, setTimeframe] = useState("ytd");
+  const [activeTab, setActiveTab] = useState("revenue");
 
   return (
     <MainLayout>
@@ -224,13 +232,27 @@ const Finances = () => {
           </Card>
         </div>
 
-        <Tabs defaultValue="revenue" className="w-full">
-          <TabsList className="mb-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="mb-4 hidden md:block">
             <TabsTrigger value="revenue">Revenue & Expenses</TabsTrigger>
             <TabsTrigger value="cashflow">Cash Flow</TabsTrigger>
             <TabsTrigger value="profitability">Profitability</TabsTrigger>
             <TabsTrigger value="budgets">Budgets</TabsTrigger>
           </TabsList>
+
+          <div className="md:hidden mb-4">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Section" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="revenue">Revenue & Expenses</SelectItem>
+                <SelectItem value="cashflow">Cash Flow</SelectItem>
+                <SelectItem value="profitability">Profitability</SelectItem>
+                <SelectItem value="budgets">Budgets</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           <TabsContent value="revenue">
             <div className="grid grid-cols-1 gap-6">
