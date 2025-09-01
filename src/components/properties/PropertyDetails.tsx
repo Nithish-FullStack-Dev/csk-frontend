@@ -95,7 +95,7 @@ export function PropertyDetails({
             Back to All Properties
           </Button>
           {canEdit && (
-            <div className="space-x-2">
+            <div className="flex md:flex-row flex-col gap-3">
               <Button size="sm" onClick={onEdit}>
                 <Edit className="mr-2 h-4 w-4" />
                 Edit

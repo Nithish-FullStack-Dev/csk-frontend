@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,13 +42,8 @@ const AboutSectionCMS = () => {
   const [stats, setStats] = useState<Stat[]>([
     { _id: "", label: "", value: 0 },
   ]);
-
   const [values, setValues] = useState<Value[]>([
-    {
-      _id: "",
-      title: "",
-      description: "",
-    },
+    { _id: "", title: "", description: "" },
   ]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,9 +58,7 @@ const AboutSectionCMS = () => {
       const res = await axios.post(
         `${import.meta.env.VITE_URL}/api/uploads/upload`,
         formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
       const uploadedUrl = res.data?.url;
@@ -113,31 +106,31 @@ const AboutSectionCMS = () => {
         mainTitle: aboutContent.mainTitle,
         paragraph1: aboutContent.paragraph1,
         paragraph2: aboutContent.paragraph2,
-        image: aboutContent.image, // now the uploaded URL
+        image: aboutContent.image,
         stats,
         values,
       };
 
-      const { data } = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_URL}/api/aboutSection/updateAboutSec/${
           aboutContent._id
         }`,
         payload
       );
 
-      await fetchAboutInfo(); // refresh UI
+      await fetchAboutInfo();
     } catch (error) {
       console.log("error occurred while saving about section", error);
     }
   };
 
-  const updateStat = (index, field, value) => {
+  const updateStat = (index: number, field: string, value: any) => {
     const updatedStats = [...stats];
     updatedStats[index] = { ...updatedStats[index], [field]: value };
     setStats(updatedStats);
   };
 
-  const updateValue = (id, field, value) => {
+  const updateValue = (id: string, field: string, value: any) => {
     setValues(
       values.map((val) => (val._id === id ? { ...val, [field]: value } : val))
     );
@@ -145,8 +138,9 @@ const AboutSectionCMS = () => {
 
   return (
     <div className="space-y-6">
+      {/* About Section */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
           <div>
             <CardTitle>About Section Management</CardTitle>
             <p className="text-sm text-muted-foreground mt-2">
@@ -154,10 +148,6 @@ const AboutSectionCMS = () => {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Eye className="h-4 w-4 mr-2" />
-              Preview
-            </Button>
             {isEditing ? (
               <Button onClick={handleSave} size="sm">
                 <Save className="h-4 w-4 mr-2" />
@@ -171,9 +161,11 @@ const AboutSectionCMS = () => {
             )}
           </div>
         </CardHeader>
+
         <CardContent className="space-y-6">
           {isEditing ? (
             <div className="space-y-4">
+              {/* Title & Paragraphs */}
               <div>
                 <Label htmlFor="mainTitle">Main Title</Label>
                 <Input
@@ -218,20 +210,19 @@ const AboutSectionCMS = () => {
                 />
               </div>
 
+              {/* Image Upload */}
               <div>
                 <Label htmlFor="aboutImage">About Image</Label>
-
-                <div className="flex items-start gap-4 mt-2">
+                <div className="flex flex-col sm:flex-row items-start gap-4 mt-2">
                   {uploading ? (
                     <p className="text-sm text-gray-500 mt-4">Uploading...</p>
                   ) : (
                     <img
                       src={aboutContent.image}
                       alt="About Preview"
-                      className="w-40 h-auto rounded border shadow"
+                      className="w-full sm:w-40 h-auto rounded border shadow object-cover"
                     />
                   )}
-
                   <input
                     type="file"
                     accept="image/*"
@@ -239,7 +230,6 @@ const AboutSectionCMS = () => {
                     className="hidden"
                     onChange={handleFileChange}
                   />
-
                   <Button
                     variant="outline"
                     size="sm"
@@ -260,7 +250,7 @@ const AboutSectionCMS = () => {
               </h3>
               <p className="text-muted-foreground">{aboutContent.paragraph1}</p>
               <p className="text-muted-foreground">{aboutContent.paragraph2}</p>
-              <div className="w-48 h-32 bg-gray-200 rounded overflow-hidden">
+              <div className="w-full sm:w-48 h-40 bg-gray-200 rounded overflow-hidden">
                 <img
                   src={aboutContent.image}
                   alt="About us"
@@ -272,13 +262,13 @@ const AboutSectionCMS = () => {
         </CardContent>
       </Card>
 
-      {/* Stats Management */}
+      {/* Stats Section */}
       <Card>
         <CardHeader>
           <CardTitle>Company Statistics</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {stats.map((stat, index) => (
               <Card key={index} className="p-4">
                 {isEditing ? (
@@ -312,13 +302,13 @@ const AboutSectionCMS = () => {
         </CardContent>
       </Card>
 
-      {/* Values Management */}
+      {/* Values Section */}
       <Card>
         <CardHeader>
           <CardTitle>Core Values</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {values.map((value) => (
               <Card key={value._id} className="p-4">
                 {isEditing ? (

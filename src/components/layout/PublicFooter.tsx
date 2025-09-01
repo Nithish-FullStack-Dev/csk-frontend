@@ -50,9 +50,9 @@ const PublicFooter = () => {
           <div className="flex flex-col items-start">
             <div className="mb-6 w-full max-w-[180px] sm:max-w-[100px] md:max-w-[150px] transform transition-transform duration-500 hover:scale-105 cursor-pointer">
               <img
-                src="/assets/images/logo.png"
+                src="/assets/images/CSK-realtors-logo.png"
                 alt="EstateCorp Logo"
-                className="w-full h-auto object-contain"
+                className="w-[60%] h-full object-contain"
               />
             </div>
             <p className="text-gray-300 leading-relaxed mb-6 text-sm">

@@ -391,7 +391,7 @@ const Properties = () => {
                 </p>
               </div>
               {canEdit && (
-                <div className="flex gap-3">
+                <div className="flex gap-3 md:flex-row flex-col ">
                   <Button
                     className="bg-estate-navy hover:bg-estate-navy/90"
                     onClick={() => {
@@ -524,7 +524,7 @@ const Properties = () => {
                   )}
 
                   {/* View mode toggle */}
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center md:flex-row flex-col">
                     <div className="text-sm text-muted-foreground">
                       {filteredProperties.length}{" "}
                       {filteredProperties.length === 1
@@ -572,7 +572,7 @@ const Properties = () => {
                   onValueChange={setStatusTab}
                   className="w-full"
                 >
-                  <TabsList className="grid grid-cols-6 mb-4">
+                  <TabsList className="flex gap-2 overflow-x-auto whitespace-nowrap mb-4">
                     <TabsTrigger value="all">All Properties</TabsTrigger>
                     <TabsTrigger
                       value="available"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -30,23 +30,11 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import {
-  UserPlus,
-  Search,
-  Filter,
-  MoreVertical,
-  Edit,
-  Trash2,
-  User,
-  Mail,
-  Phone,
-  KeyRound,
-} from "lucide-react";
+import { UserPlus, Search, Filter, Edit, Trash2, KeyRound } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserRole } from "@/contexts/AuthContext";
 import axios from "axios";
-import { formatDistanceToNow, formatDistanceToNowStrict } from "date-fns";
-import { useMemo } from "react";
+import { formatDistanceToNowStrict } from "date-fns";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -81,7 +69,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchAllUsers();
-    if (userAdded) setUserAdded(false); // reset flag after fetch
+    if (userAdded) setUserAdded(false);
   }, [userAdded]);
 
   const filteredUsers = useMemo(() => {
@@ -99,7 +87,7 @@ const UserManagement = () => {
       email: newUser.email,
       phone: newUser.phone,
       password: newUser.password,
-      roleName: newUser.role, // matches Role collection name
+      roleName: newUser.role,
     };
     try {
       const response = await axios.post(
@@ -110,15 +98,15 @@ const UserManagement = () => {
         toast.success("User added successfully", {
           description: `${newUser.name} has been added as a ${newUser.role}`,
         });
-        setUserAdded(true); // trigger refetch
-        setShowAddUserDialog(false); // close dialog if any
+        setUserAdded(true);
+        setShowAddUserDialog(false);
         setNewUser({
           name: "",
           email: "",
           password: "",
           role: "agent",
           phone: "",
-        }); // reset form
+        });
       }
     } catch (error) {
       console.error("Error adding user:", error);
@@ -129,10 +117,9 @@ const UserManagement = () => {
   const handleDeleteUser = async () => {
     if (!selectedUser) return;
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `${import.meta.env.VITE_URL}/api/user/deleteUser/${selectedUser._id}`
       );
-
       toast.success("User deleted successfully");
       setShowEditUserDialog(false);
     } catch (error) {
@@ -144,14 +131,11 @@ const UserManagement = () => {
   const handleUpdateUser = async () => {
     if (!selectedUser) return;
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_URL}/api/user/updateUser`,
-        { updatedUser: selectedUser }
-      );
-
+      await axios.post(`${import.meta.env.VITE_URL}/api/user/updateUser`, {
+        updatedUser: selectedUser,
+      });
       toast.success("User updated successfully");
       setShowEditUserDialog(false);
-      // Optionally refresh user list
     } catch (error) {
       console.error("Error updating user:", error);
       toast.error("Failed to update user");
@@ -176,6 +160,7 @@ const UserManagement = () => {
       toast.error("Failed to update password");
     }
   };
+
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case "owner":
@@ -218,9 +203,11 @@ const UserManagement = () => {
     "customer_prospect",
     "public_user",
   ];
+
   return (
     <MainLayout>
       <div className="space-y-6">
+        {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
           <div>
             <h1 className="text-3xl font-md font-vidaloka">User Management</h1>
@@ -348,14 +335,8 @@ const UserManagement = () => {
           </div>
         </div>
 
+        {/* Tabs */}
         <Tabs defaultValue="all-users" className="w-full font-sans">
-          <TabsList className="mb-4">
-            <TabsTrigger value="all-users">All Users</TabsTrigger>
-            <TabsTrigger value="admins">Admins</TabsTrigger>
-            <TabsTrigger value="sales">Sales Team</TabsTrigger>
-            <TabsTrigger value="operations">Operations</TabsTrigger>
-          </TabsList>
-
           <Card>
             <CardHeader className="pb-2">
               <div className="flex flex-col md:flex-row justify-between md:items-center space-y-2 md:space-y-0">
@@ -377,8 +358,10 @@ const UserManagement = () => {
                 </div>
               </div>
             </CardHeader>
+
             <CardContent>
-              <div className="rounded-md border">
+              {/* Desktop Table View */}
+              <div className="hidden md:block rounded-md border">
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -435,7 +418,6 @@ const UserManagement = () => {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex justify-end gap-2">
-                              {/* Edit User Button */}
                               <Button
                                 size="icon"
                                 variant="ghost"
@@ -447,8 +429,6 @@ const UserManagement = () => {
                               >
                                 <Edit className="h-4 w-4" />
                               </Button>
-
-                              {/* Reset Password Button */}
                               <Button
                                 size="icon"
                                 variant="ghost"
@@ -458,10 +438,8 @@ const UserManagement = () => {
                                   setShowResetPasswordDialog(true);
                                 }}
                               >
-                                <KeyRound className="h-4 w-4" />{" "}
+                                <KeyRound className="h-4 w-4" />
                               </Button>
-
-                              {/* Delete User Button */}
                               <Button
                                 size="icon"
                                 variant="ghost"
@@ -481,9 +459,92 @@ const UserManagement = () => {
                   </TableBody>
                 </Table>
               </div>
+
+              {/* Mobile Card View */}
+              <div className="md:hidden space-y-4">
+                {filteredUsers.length === 0 ? (
+                  <p className="text-center py-4 text-muted-foreground">
+                    No users found matching your search
+                  </p>
+                ) : (
+                  filteredUsers.map((user) => (
+                    <Card key={user._id} className="p-4 shadow-sm border">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h3 className="font-semibold text-base">
+                            {user.name}
+                          </h3>
+                          <p className="text-sm text-muted-foreground">
+                            {user.email}
+                          </p>
+                        </div>
+                        <Badge
+                          className={getRoleBadgeColor(user.role)}
+                          variant="outline"
+                        >
+                          {user.role.replace("_", " ")}
+                        </Badge>
+                      </div>
+
+                      <div className="mt-3 flex justify-between items-center">
+                        <Badge
+                          className={getStatusBadgeColor(user.status)}
+                          variant="outline"
+                        >
+                          {user.status}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">
+                          {user?.lastLogin
+                            ? formatDistanceToNowStrict(
+                                new Date(user.lastLogin),
+                                {
+                                  addSuffix: true,
+                                }
+                              )
+                            : "Never logged in"}
+                        </span>
+                      </div>
+
+                      <div className="mt-3 flex justify-end gap-2">
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setShowEditUserDialog(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setShowResetPasswordDialog(true);
+                          }}
+                        >
+                          <KeyRound className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => {
+                            setSelectedUser(user);
+                            setshowResetDeleteDialog(true);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </Card>
+                  ))
+                )}
+              </div>
             </CardContent>
           </Card>
         </Tabs>
+
         <Dialog open={showEditUserDialog} onOpenChange={setShowEditUserDialog}>
           <DialogContent>
             <DialogHeader>

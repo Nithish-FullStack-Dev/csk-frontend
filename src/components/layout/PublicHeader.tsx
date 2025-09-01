@@ -98,7 +98,7 @@ const PublicHeader = () => {
             <Link to="/public" className="flex items-center flex-shrink-0">
               <div className="w-24 md:w-28 transition-transform duration-500 hover:scale-105">
                 <img
-                  src={"/assets/images/logo.png"}
+                  src={"/assets/images/CSK-realtors-logo.png"}
                   alt="CSK Realtors Logo"
                   className="h-full w-full object-contain"
                 />
